@@ -1,21 +1,21 @@
-# OpenClaw 智能体状态监控系统
+# OpenClaw Agent Status Monitoring System
 
-## 项目简介
+## Project Overview
 
-本系统是一个纯展示型 Web 系统,用于展示用户 OpenClaw 智能体的实时运行状态。采用前后端分离架构,前端使用 Vue3,后端使用 Node.js+Express+SQLite。
+This system is a display-only Web application designed to showcase real-time running status of user's OpenClaw agents. It adopts a frontend-backend separated architecture, using Vue3 for frontend and Node.js + Express + SQLite for backend.
 
-## 核心特性
+## Core Features
 
-- ✅ **数据透传**:所有 OpenClaw 状态数据通过前端直接从用户 Gateway 获取,后端不存储、不介入
-- ✅ **本地存储**:历史数据存储在用户浏览器 IndexedDB,用户可自主管理
-- ✅ **动态发现**:绑定 Gateway 后自动发现智能体和渠道,无需手动配置
-- ✅ **标签页切换**:顶部标签页方式切换智能体视图,最多支持 8 个智能体
-- ✅ **实时监控**:30 秒轮询更新智能体状态和渠道状态
-- ✅ **KBI 图表**:任务完成率趋势、渠道消息分布、响应速度对比、资源使用分布
+- ✅ **Data Passthrough**: All OpenClaw status data is fetched directly from user's Gateway by the frontend, with no storage or intervention from the backend
+- ✅ **Local Storage**: Historical data is stored in user's browser IndexedDB, allowing users to manage it independently
+- ✅ **Dynamic Discovery**: Automatically discover agents and channels after binding Gateway, no manual configuration needed
+- ✅ **Tab Switching**: Switch between agent views using top tabs, supporting up to 8 agents
+- ✅ **Real-time Monitoring**: 30-second polling updates for agent status and channel status
+- ✅ **KBI Charts**: Task completion rate trends, channel message distribution, response speed comparison, resource usage distribution
 
-## 技术栈
+## Tech Stack
 
-### 前端
+### Frontend
 - Vue 3.3.11+
 - Element Plus 2.4.4+
 - ECharts 5.4.3+
@@ -25,7 +25,7 @@
 - Axios 1.6.0+
 - Dexie.js 3.2.0+
 
-### 后端
+### Backend
 - Node.js 18.0+
 - Express 4.18.0+
 - SQLite3 5.1.0+
@@ -34,53 +34,53 @@
 - crypto-js 4.2.0+
 - nodemailer 6.9.0+
 
-## 项目结构
+## Project Structure
 
 ```
 BigHome/
-├── frontend/          # 前端项目
-│   ├── src/          # 源代码
-│   ├── public/       # 静态资源
-│   └── package.json  # 依赖配置
-├── backend/          # 后端项目
-│   ├── src/          # 源代码
-│   └── package.json  # 依赖配置
-├── .codeartsdoer/    # SDD 文档
+├── frontend/          # Frontend project
+│   ├── src/          # Source code
+│   ├── public/       # Static resources
+│   └── package.json  # Dependency configuration
+├── backend/          # Backend project
+│   ├── src/          # Source code
+│   └── package.json  # Dependency configuration
+├── .codeartsdoer/    # SDD documents
 │   └── specs/
 │       └── openclaw_monitor/
-│           ├── spec.md      # 需求规格文档
-│           ├── design.md    # 技术设计文档
-│           └── tasks.md     # 任务规划文档
-└── README.md         # 项目说明
+│           ├── spec.md      # Requirements specification
+│           ├── design.md    # Technical design document
+│           └── tasks.md     # Task planning document
+└── README.md         # Project documentation
 ```
 
-## 快速开始
+## Quick Start
 
-### 前端启动
+### Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### 后端启动
+### Backend Setup
 ```bash
 cd backend
 npm install
 npm start
 ```
 
-## 文档
+## Documentation
 
-- [需求规格文档](.codeartsdoer/specs/openclaw_monitor/spec.md)
-- [技术设计文档](.codeartsdoer/specs/openclaw_monitor/design.md)
-- [任务规划文档](.codeartsdoer/specs/openclaw_monitor/tasks.md)
+- [Requirements Specification](.codeartsdoer/specs/openclaw_monitor/spec.md)
+- [Technical Design Document](.codeartsdoer/specs/openclaw_monitor/design.md)
+- [Task Planning Document](.codeartsdoer/specs/openclaw_monitor/tasks.md)
 
-## 版本信息
+## Version Information
 
-- **当前版本**: V14 (标签页版)
-- **更新日期**: 2026-03-23
+- **Current Version**: V14 (Tab Edition)
+- **Last Updated**: 2026-03-23
 
-## 许可证
+## License
 
 MIT License
