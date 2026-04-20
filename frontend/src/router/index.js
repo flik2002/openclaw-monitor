@@ -8,6 +8,12 @@ const routes = [
     meta: { requiresAuth: false } // 访客可访问
   },
   {
+    path: '/monitor-v2',
+    name: 'MonitorV2',
+    component: () => import('@/views/monitor/MonitorPageV2.vue'),
+    meta: { requiresAuth: false } // 访客可访问
+  },
+  {
     path: '/auth',
     name: 'Auth',
     component: () => import('@/views/auth/AuthLayout.vue'),
@@ -21,6 +27,11 @@ const routes = [
         path: 'register',
         name: 'Register',
         component: () => import('@/views/auth/Register.vue')
+      },
+      {
+        path: 'reset-password',
+        name: 'ResetPassword',
+        component: () => import('@/views/auth/ResetPassword.vue')
       }
     ]
   },
