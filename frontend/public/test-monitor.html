@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试监控页面</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .test-link {
+      display: block;
+      padding: 15px;
+      margin: 10px 0;
+      background: #f0f0f0;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+    }
+    .test-link:hover {
+      background: #e0e0e0;
+      border-color: #999;
+    }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    .error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: 2px solid #333;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>监控页面测试</h1>
+    
+    <div class="status success">
+      ✅ 测试页面加载成功
+    </div>
+    
+    <div style="margin: 20px 0;">
+      <h3>直接访问 monitor-ui-v2.html:</h3>
+      <a href="/monitor-ui-v2.html" class="test-link" target="_blank">
+        🚀 点击这里打开 monitor-ui-v2.html
+      </a>
+    </div>
+    
+    <div style="margin: 20px 0;">
+      <h3>在iframe中预览:</h3>
+      <iframe src="/monitor-ui-v2.html" frameborder="0"></iframe>
+    </div>
+    
+    <div style="margin: 20px 0;">
+      <h3>调试信息:</h3>
+      <p>当前URL: <span id="current-url"></span></p>
+      <p>monitor-ui-v2.html 路径: <code>/monitor-ui-v2.html</code></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('current-url').textContent = window.location.href;
+    console.log('测试页面已加载');
+    console.log('尝试访问 monitor-ui-v2.html...');
+  </script>
+</body>
+</html>
