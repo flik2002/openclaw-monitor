@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API测试</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+    .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1 { color: #333; }
+    .test-section { margin: 20px 0; padding: 15px; border: 1px solid #e0e0e0; border-radius: 5px; }
+    .test-section h2 { margin-top: 0; color: #666; }
+    button { padding: 10px 20px; background: #1890ff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+    button:hover { background: #40a9ff; }
+    .result { margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 5px; white-space: pre-wrap; font-family: monospace; }
+    .success { background: #f6ffed; border: 1px solid #b7eb8f; }
+    .error { background: #fff1f0; border: 1px solid #ffa39e; }
+    .info { background: #e6f7ff; border: 1px solid #91d5ff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 OpenClaw API 测试页面</h1>
+    
+    <div class="test-section">
+      <h2>1. 检查Token</h2>
+      <button onclick="checkToken()">检查Token</button>
+      <div id="token-result" class="result info">点击按钮检查Token</div>
+    </div>
+    
+    <div class="test-section">
+      <h2>2. 测试 /api/gateway/status</h2>
+      <button onclick="testGatewayStatus()">测试Gateway状态</button>
+      <div id="gateway-result" class="result info">点击按钮测试API</div>
+    </div>
+    
+    <div class="test-section">
+      <h2>3. 测试 /api/channels/history</h2>
+      <button onclick="testChannelsHistory()">测试渠道历史</button>
+      <div id="channels-result" class="result info">点击按钮测试API</div>
+    </div>
+  </div>
+
+  <script>
+    function checkToken() {
+      const token = localStorage.getItem('token');
+      const resultDiv = document.getElementById('token-result');
+      
+      if (token) {
+        resultDiv.textContent = `Token存在: ${token.substring(0, 30)}...`;
+        resultDiv.className = 'result success';
+      } else {
+        resultDiv.textContent = 'Token不存在! 需要先登录';
+        resultDiv.className = 'result error';
+      }
+    }
+
+    async function testGatewayStatus() {
+      const token = localStorage.getItem('token');
+      const resultDiv = document.getElementById('gateway-result');
+      
+      resultDiv.textContent = '正在测试...';
+      resultDiv.className = 'result info';
+      
+      try {
+        console.log('发送请求到 /api/gateway/status');
+        console.log('Token:', token ? token.substring(0, 30) + '...' : '无Token');
+        
+        const response = await fetch('/api/gateway/status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          }
+        });
+        
+        console.log('响应状态:', response.status, response.statusText);
+        
+        const data = await response.json();
+        console.log('响应数据:', data);
+        
+        resultDiv.textContent = `状态: ${response.status} ${response.statusText}\n\n响应数据:\n${JSON.stringify(data, null, 2)}`;
+        
+        if (response.ok) {
+          resultDiv.className = 'result success';
+        } else {
+          resultDiv.className = 'result error';
+        }
+      } catch (error) {
+        console.error('请求失败:', error);
+        resultDiv.textContent = `请求失败: ${error.message}`;
+        resultDiv.className = 'result error';
+      }
+    }
+
+    async function testChannelsHistory() {
+      const token = localStorage.getItem('token');
+      const resultDiv = document.getElementById('channels-result');
+      
+      resultDiv.textContent = '正在测试...';
+      resultDiv.className = 'result info';
+      
+      try {
+        console.log('发送请求到 /api/channels/history?days=7');
+        console.log('Token:', token ? token.substring(0, 30) + '...' : '无Token');
+        
+        const response = await fetch('/api/channels/history?days=7', {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : ''
+          }
+        });
+        
+        console.log('响应状态:', response.status, response.statusText);
+        
+        const data = await response.json();
+        console.log('响应数据:', data);
+        
+        resultDiv.textContent = `状态: ${response.status} ${response.statusText}\n\n响应数据:\n${JSON.stringify(data, null, 2)}`;
+        
+        if (response.ok) {
+          resultDiv.className = 'result success';
+        } else {
+          resultDiv.className = 'result error';
+        }
+      } catch (error) {
+        console.error('请求失败:', error);
+        resultDiv.textContent = `请求失败: ${error.message}`;
+        resultDiv.className = 'result error';
+      }
+    }
+
+    // 页面加载时自动检查Token
+    document.addEventListener('DOMContentLoaded', () => {
+      checkToken();
+    });
+  </script>
+</body>
+</html>
