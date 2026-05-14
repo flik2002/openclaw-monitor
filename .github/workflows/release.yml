@@ -5,12 +5,17 @@ on:
     branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
   NODE_VERSION: '20'
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code
@@ -53,7 +58,8 @@ jobs:
           mkdir -p release
           tar -czf release/frontend-dist.tar.gz -C frontend dist
           tar -czf release/backend.tar.gz -C backend .
-          tar -czf release/openclaw-monitor-${{ steps.timestamp.outputs.ts }}.tar.gz             -C . README.md LICENSE QUICK_START.md frontend/dist backend openclaw-monitor
+          tar -czf release/openclaw-monitor-${{ steps.timestamp.outputs.ts }}.tar.gz \
+            -C . README.md LICENSE QUICK_START.md frontend/dist backend openclaw-monitor
 
       - name: Upload Release artifacts
         uses: softprops/action-gh-release@v2
