@@ -1,104 +1,72 @@
-# OpenClaw Monitor System
+# OpenClaw Monitor
 
-A real-time monitoring dashboard for OpenClaw Agent status, featuring session tracking, token usage statistics, and message trends visualization.
+> AI monitors AI — Free open-source monitoring dashboard for OpenClaw agents.
+
+[![Stars](https://img.shields.io/github/stars/flik2002/openclaw-monitor?style=social)](https://github.com/flik2002/openclaw-monitor)
+[![Forks](https://img.shields.io/github/forks/flik2002/openclaw-monitor?style=social)](https://github.com/flik2002/openclaw-monitor)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Demo Screenshot
+
+![OpenClaw Monitor](Openclaw%20Monitor.jpg)
+
+<!-- Add a GIF demo here: record your screen showing the dashboard in action, -->
+<!-- save as demo.gif, and uncomment the line below: -->
+<!-- ![Demo](demo.gif) -->
 
 ## Features
 
-- **Real-time Monitoring**: Live status of OpenClaw Gateway and sessions
-- **Token Statistics**: Track total tokens, prompt tokens, and completion tokens
-- **Session Management**: View active sessions with model info and runtime
-- **Message Trends**: 7-day message statistics with daily breakdown
-- **System Metrics**: Uptime tracking and memory usage display
+- **Cron Task Scheduler** — Visualize AI agent task scheduling at a glance
+- **Token Usage Tracking** — 7-day bar chart of prompt/completion tokens per model
+- **Multi-Model Support** — Claude Code, OpenAI Codex, DeepSeek V4, and more
+- **Real-time Sessions** — Live session list with model, runtime, and status
+- **7-Day Message Trends** — Daily message count breakdown with ECharts
+- **System Metrics** — Uptime and memory usage monitoring
 
 ## Tech Stack
 
-### Frontend
-- Vue 3 + Vite
-- Element Plus UI
-- ECharts for visualization
-
-### Backend (Monitor API)
-- Node.js + Express
-- WebSocket client for Gateway connection
-- File-based session data reading
+- **Frontend**: Vue 3 + Vite + Element Plus + ECharts
+- **Backend**: Node.js + Express + WebSocket client
+- **Data**: Local session JSON files (no cloud, fully offline)
 
 ## Project Structure
 
 ```
-BigHome/
-├── frontend/              # Vue 3 frontend application
-│   ├── src/               # Source code
-│   ├── public/            # Static files (monitor-ui-v2.html)
-│   └── vite.config.js     # Vite configuration with proxy
-├── openclaw-monitor/      # Monitor API server
-│   ├── server.js          # Main API server
-│   ├── gateway-client.js  # WebSocket client for Gateway
-│   ├── .env               # Configuration file
-│   └── package.json       # Dependencies
-├── start-all.bat          # Start all services (Windows)
-├── stop-all.bat           # Stop all services (Windows)
-└── README.md              # This file
+openclaw-monitor/
+├── frontend/              # Vue 3 dashboard
+│   ├── src/
+│   └── vite.config.js
+├── backend/               # Monitor API server
+│   └── src/
+├── openclaw-monitor/      # Monitor helper scripts
+├── start-all.bat          # Windows one-click start
+└── stop-all.bat           # Windows stop
 ```
 
 ## Quick Start
 
 ### Prerequisites
 
-1. **Node.js** 18+ installed
-2. **OpenClaw Gateway** running on port 18789
-3. **OpenClaw data directory** configured (default: `%APPDATA%\SPB_Data\.openclaw`)
+- Node.js 18+
+- OpenClaw Gateway running on port 18789
 
-### Configuration
+### One-Click Start (Windows)
 
-Edit `openclaw-monitor/.env` to match your environment:
-
-```env
-OPENCLAW_TOKEN=your_token_here
-OPENCLAW_WORKSPACE=C:\Users\YourUser\AppData\Roaming\SPB_Data\.openclaw\workspace
-OPENCLAW_DATA_DIR=C:\Users\YourUser\AppData\Roaming\SPB_Data\.openclaw
-MONITOR_PORT=3000
-GATEWAY_HOST=127.0.0.1
-GATEWAY_PORT=18789
-```
-
-### Start Services
-
-**Windows (Recommended):**
 ```bash
-# Double-click or run in command prompt:
 start-all.bat
 ```
 
-This will:
-1. Start Monitor API server on port 3000
-2. Start Frontend dev server on port 5173
-3. Open browser to http://localhost:5173/monitor-v2
+### Manual Start
 
-**Manual Start:**
 ```bash
-# Terminal 1: Start Monitor API
-cd openclaw-monitor
-npm install
-node server.js
+# Terminal 1: Monitor API (port 3000)
+cd backend && npm install && npm start
 
-# Terminal 2: Start Frontend
-cd frontend
-npm install
-npm run dev
+# Terminal 2: Frontend (port 5173)
+cd frontend && npm install && npm run dev
 
-# Open browser: http://localhost:5173/monitor-v2
+# Open: http://localhost:5173/monitor-v2
 ```
-
-### Stop Services
-
-**Windows:**
-```bash
-# Double-click or run:
-stop-all.bat
-```
-
-**Manual:**
-Press `Ctrl+C` in each terminal window.
 
 ## API Endpoints
 
@@ -106,52 +74,29 @@ Press `Ctrl+C` in each terminal window.
 |----------|-------------|
 | `GET /health` | Health check |
 | `GET /api/gateway/status` | Gateway connection status |
-| `GET /api/sessions/list` | List all sessions with token stats |
-| `GET /api/metrics/system` | System uptime and metrics |
-| `GET /api/metrics/memory` | Memory usage |
-| `GET /api/messages/stats` | Message statistics with 7-day trend |
-| `GET /api/models/current` | Current model information |
+| `GET /api/sessions/list` | All sessions with token stats |
+| `GET /api/metrics/system` | System uptime and memory |
+| `GET /api/messages/stats` | 7-day message trend |
+| `GET /api/models/current` | Current model info |
 
 ## Architecture
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   Browser       │────▶│   Frontend      │────▶│   Monitor API   │
-│ localhost:5173  │     │   (Vite Dev)    │     │   localhost:3000│
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-                                                        │
-                        ┌───────────────────────────────┼───────────────────────────────┐
-                        │                               │                               │
-                        ▼                               ▼                               ▼
-                ┌───────────────┐             ┌───────────────┐             ┌───────────────┐
-                │   Gateway     │             │  Sessions     │             │  History      │
-                │  WebSocket    │             │  JSON File    │             │  .reset Files │
-                │  port 18789   │             │               │             │               │
-                └───────────────┘             └───────────────┘             └───────────────┘
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   Browser    │────▶│   Frontend   │────▶│  Monitor API │
+│localhost:5173│     │  (Vue 3)     │     │  localhost:3000
+└──────────────┘     └──────────────┘     └──────┬───────┘
+                                                  │
+                          ┌───────────────────────┼───────────────────────┐
+                          │                       │                       │
+                          ▼                       ▼                       ▼
+                  ┌──────────────┐       ┌──────────────┐       ┌──────────────┐
+                  │   Gateway    │       │   Sessions   │       │   History    │
+                  │  WebSocket  │       │  JSON Files  │       │  .reset Files│
+                  │  port 18789 │       │              │       │              │
+                  └──────────────┘       └──────────────┘       └──────────────┘
 ```
-
-## Troubleshooting
-
-### Monitor shows all zeros
-
-1. Check if Monitor API is running: `http://localhost:3000/health`
-2. Check if Gateway is running: `netstat -an | findstr 18789`
-3. Check if data directory exists in `.env`
-4. Restart services using `stop-all.bat` then `start-all.bat`
-
-### "require is not defined" error
-
-This means `openclaw-monitor/package.json` is missing. Make sure it exists with `"type": "commonjs"`.
-
-### Frontend proxy errors
-
-Check `frontend/vite.config.js` has both `/api` and `/monitor-api` proxy configurations.
-
-## Version
-
-- **Version**: 1.0.0
-- **Last Updated**: 2026-04-20
 
 ## License
 
-MIT License
+MIT — use freely, contribute welcome!
