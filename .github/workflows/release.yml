@@ -1,0 +1,89 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Build backend
+        working-directory: ./backend
+        run: |
+          if [ -f "package.json" ] && grep -q '"build"' package.json; then
+            npm run build
+          else
+            echo "No build script, skipping..."
+          fi
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npx vite build
+
+      - name: Create Release timestamp
+        id: timestamp
+        run: |
+          echo "ts=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+          echo "date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_OUTPUT
+
+      - name: Package build artifacts
+        run: |
+          mkdir -p release
+          tar -czf release/frontend-dist.tar.gz -C frontend dist
+          tar -czf release/backend.tar.gz -C backend .
+          tar -czf release/openclaw-monitor-${{ steps.timestamp.outputs.ts }}.tar.gz             -C . README.md LICENSE QUICK_START.md frontend/dist backend openclaw-monitor
+
+      - name: Upload Release artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.timestamp.outputs.ts }}
+          name: OpenClaw Monitor ${{ steps.timestamp.outputs.date }}
+          body: |
+            ## OpenClaw Monitor Release
+            
+            **Build:** v${{ steps.timestamp.outputs.ts }}
+            **Date:** ${{ steps.timestamp.outputs.date }}
+            
+            ### Included
+            - `frontend/dist/` - Built frontend static files
+            - `backend/` - Backend (run `cd backend && npm start`)
+            - `openclaw-monitor/` - Helper scripts
+            
+            ### Quick Start
+            ```
+            tar -xzf openclaw-monitor-*.tar.gz
+            cd openclaw-monitor
+            cd backend && npm start
+            cd frontend && npm run dev
+            ```
+          files: |
+            release/openclaw-monitor-${{ steps.timestamp.outputs.ts }}.tar.gz
+            release/frontend-dist.tar.gz
+            release/backend.tar.gz
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
